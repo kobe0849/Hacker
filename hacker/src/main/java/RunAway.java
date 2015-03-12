@@ -127,7 +127,7 @@ public class RunAway {
     static int t[][] = new int[1000][1000];
     static int vis[][] = new int[1000][1000];
     static void dfs(int x,int y,int mx,int my,String ans){
-        System.out.println(x + " ss " + y + " " + mx + " " + my);
+       // System.out.println(x + " ss " + y + " " + mx + " " + my);
         if(x == mx && y == my){
             flag = 1;
             Ans = ans;
@@ -144,7 +144,7 @@ public class RunAway {
         }
     }
     static String getans(int t[][],int lx,int ly){
-        System.out.println(lx + " " + ly);
+      //  System.out.println(lx + " " + ly);
         for(int i = 0; i <= lx; i++)
             for(int j = 0; j <= ly; j++){
                 vis[i][j] = 0;
@@ -208,13 +208,13 @@ public class RunAway {
 
     }
     public static void main(String[] args) {
-        for(int h = 7; h <= 100; ++h) {
+        for(int h = 241; h <= 500; ++h) {
             String s = sendPost("http://www.hacker.org/runaway/index.php", "");
             String ans =  "path=";
             ans += work(s);
             sendPost("http://www.hacker.org/runaway/index.php", ans);
 
-            System.out.println("hello");
+            System.out.println("hello" + "level =  " + h);
         }
         // System.out.println(s);
     }
