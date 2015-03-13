@@ -208,6 +208,7 @@ public class RunAway {
 
     }
     public static void main(String[] args) {
+
         for(int h = 241; h <= 500; ++h) {
             String s = sendPost("http://www.hacker.org/runaway/index.php", "");
             String ans =  "path=";
