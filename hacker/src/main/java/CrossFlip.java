@@ -178,6 +178,7 @@ public class CrossFlip {
                     ans += '1';
                 } else ans += '0';
             }
+            System.out.println(ans);
             Utils.sendPost("http://www.hacker.org/cross/?", ans);
         }
     }
