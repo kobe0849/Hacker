@@ -8,11 +8,42 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by feixia on 15/3/12.
  */
+
 public class CrossFlip {
+    static class MyThread implements Runnable{
+        int id;
+        private CountDownLatch runningThreadNum;
+        MyThread(int _id,CountDownLatch runningThreadNum){
+            id = _id;
+            this.runningThreadNum= runningThreadNum;
+
+        }
+        public void run() {
+            int i = id;
+            for(i = id; i < C; i+=10) {
+                //System.out.println(id + " " + i + " " + J + " " + I);
+               // System.out.println(mat[i].toString());
+                if(i != J && mat[i].get(I) == true){
+                   mat[i].xor(mat[J]);
+                }
+                //System.out.println("aa" + mat[i].toString());
+            }
+            sum  += 1;
+            //System.out.println(I + " " + J + " " + id + " " + sum);
+            runningThreadNum.countDown();
+
+
+        }
+    }
+    static int sum = 0;
+    static int C = 0;
+    static int I = 0;
+    static int J = 0;
     static int Row, Col;
     static char mp[][] = new char[2010][2010];
     static MyBitSet mat[] = new MyBitSet[41010];
@@ -42,12 +73,14 @@ public class CrossFlip {
         return strDay + " " + strHour + ":" + strMinute + ":" + strSecond + " " + strMilliSecond;
     }
 
+
     public static void solve() {
         System.out.println(Row + " " + Col);
         int Max = getId(Row - 1, Col - 1) + 1;
         long startTime = System.currentTimeMillis();
         System.out.println("Start");
         for (int i = 0, j = 0; i < Max; i++, j++) {
+            I = i;
             int k = j;
             for (; mat[k].get(i) == false && k < Max; k++) ;
             if (k == Max) continue;
@@ -56,19 +89,28 @@ public class CrossFlip {
                 mat[k].set(f, mat[j].get(f));
                 mat[j].set(f, tmp);
             }
-            for (int f = 0; f < Max; f++)
-                if (f != j && mat[f].get(i) == true) {
-                    mat[f].xor(mat[j]);
-                }
+            C = Max;
+            J = j;
+            sum = 0;
+            CountDownLatch runningThreadNum = new CountDownLatch(10);//初始化countDown
+
+            for(int o = 0; o < 10; o++){
+                new Thread(new MyThread(o,runningThreadNum)).start();
+            }
+            try {
+                runningThreadNum.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
         long endTime = System.currentTimeMillis(); //获取结束时间
         String time = format(endTime - startTime);
         System.out.println("时间:" + time);
         System.out.println("程序运行时间： " + (endTime - startTime) + "ms");
-
     }
 
-    public static void work(String str) {
+    public static String work(String str,Integer level) {
         String tmp = "";
         int cnt = 0;
         Col = 0;
@@ -124,6 +166,17 @@ public class CrossFlip {
 
         solve();
 
+
+        String ans = "lvl=";
+        ans += level.toString();
+        ans += "&sol=";
+        for (int i = 0; i < Max; i++) {
+            if (mat[i].get(Max)) {
+                ans += '1';
+            } else ans += '0';
+        }
+        //System.out.println(ans);
+        return ans;
     }
 
     static void goUp(int x, int y) {
@@ -165,22 +218,32 @@ public class CrossFlip {
     }
 
     public static void main(String args[]) {
-        /*http://www.hacker.org/cross/?lvl=0&sol=0100*/
-        for (Integer level = 183; level <= 480; level++) {
+
+       for (Integer level = 500; level <= 600; level++) {
             String str = Utils.sendPost("http://www.hacker.org/cross/index.php", "");
-            work(str);
-            String ans = "lvl=";
-            ans += level.toString();
-            ans += "&sol=";
-            int Max = getId(Row - 1, Col - 1) + 1;
-            for (int i = 0; i < Max; i++) {
-                if (mat[i].get(Max)) {
-                    ans += '1';
-                } else ans += '0';
-            }
-            System.out.println(ans);
+            String ans = work(str,level);
             Utils.sendPost("http://www.hacker.org/cross/?", ans);
         }
+
     }
+    /*private void syncOneTable(final Table table) {
+        WaitForThreadExecutor executor = new WaitForThreadExecutor();
+
+        for(int i=0; i<10; i++){
+            executor.add(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true){
+
+                    }
+                }
+
+            }, "getDoc"+i));
+
+        }
+
+        executor.start();
+        executor.waitFor();
+    }*/
 
 }
