@@ -17,7 +17,7 @@ public class modulo {
     static Pair Ans[] = new Pair[30];
     static Pair tmpAns[] = new Pair[30];
     static boolean flag;
-    static HashSet<Integer>H[] = new HashSet[25];
+    static HashSet<Long>H[] = new HashSet[25];
 
     public static void work(String str){
         int len = str.length();
@@ -55,8 +55,8 @@ public class modulo {
                 break;
             }
         }
-
-        System.out.println(mp1);
+        System.out.println(LX + " " + LY);
+        //System.out.println(mp1);
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++) {
                 System.out.print(map[i][j] + " ");
@@ -73,18 +73,18 @@ public class modulo {
             a += mp2.charAt(i);
         }
         box[++cnt] = new Box(a,cnt);
-
-        Arrays.sort(box,1,cnt+1);
+        System.out.println(cnt);
+       // Arrays.sort(box,1,cnt+1);
         for(int i = 1; i <= cnt; i++){
             System.out.println(box[i]);
         }
 
     }
-    static boolean Has(int id,int s){
+    static boolean Has(int id,long s){
         return  H[id].contains(s);
     }
-    static int getStatus(int tmpMap[][]){
-        int s = 0;
+    static  long getStatus(int tmpMap[][]){
+        long s = 0;
         for(int i = 0; i < LX; i++)
             for(int j = 0; j < LY; j++){
                 s = s * Mod + tmpMap[i][j];
@@ -95,7 +95,7 @@ public class modulo {
     static void go(int now,Pair tmp[],int tmpMap[][]){
         //System.out.println(now + "sdsd");
         if(flag) return;
-        int s = getStatus(tmpMap);
+        long s = getStatus(tmpMap);
         if(now == cnt){
             if(s == 0) {
                 System.out.println("ssdsds");
@@ -151,11 +151,12 @@ public class modulo {
                 tmpMap[i][j] = map[i][j];
             }
         for(int i = 0; i < 25; i++) {
-            H[i] = new HashSet<Integer>();
+            H[i] = new HashSet<Long>();
             H[i].clear();
         }
         go(0, tmpAns, tmpMap);
     }
+
     public static void main(String args[]) {
         String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=22&go=Go+To+Level", "");
         work(str);

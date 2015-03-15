@@ -38,6 +38,7 @@ public class Box implements Comparable<Box>{
         for(int i = 0; i < lenx; i++) {
             for (int j = 0; j < leny; j++) {
                 ans += (char) (s[i][j] + '0');
+                ans += " ";
             }
             ans += "\n";
         }
