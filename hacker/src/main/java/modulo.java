@@ -1,15 +1,19 @@
+import java.util.HashSet;
+import java.util.Hashtable;
+
 /**
  * Created by feixia on 15/3/13.
  */
 public class modulo {
+    static  int Mod = 3;
     static int map[][] = new int[20][20];
     static Box box[] = new Box[100];
-    static int dp[][] = new int[10][1<<15];
     static int LX,LY;
     static int cnt;
     static Pair Ans[] = new Pair[30];
     static Pair tmpAns[] = new Pair[30];
     static boolean flag;
+    static HashSet<Integer>H[] = new HashSet[25];
 
     public static void work(String str){
         int len = str.length();
@@ -70,42 +74,55 @@ public class modulo {
         }
     }
     static boolean Has(int id,int s){
-        return  dp[id][s] == 1;
+        return  H[id].contains(s);
     }
     static int getStatus(int tmpMap[][]){
         int s = 0;
         for(int i = 0; i < LX; i++)
             for(int j = 0; j < LY; j++){
-                s = s << 1 | tmpMap[i][j];
+                s = s * Mod + tmpMap[i][j];
 
             }
         return s;
     }
     static void go(int now,Pair tmp[],int tmpMap[][]){
+        //System.out.println(now + "sdsd");
+        if(flag) return;
+        int s = getStatus(tmpMap);
         if(now == cnt){
-            flag = true;
+            if(s == 0) {
+                System.out.println("ssdsds");
+                for (int i = 0; i < cnt; i++) {
+                    Ans[i].x = tmp[i].x;
+                    Ans[i].y = tmp[i].y;
+                    System.out.println(tmp[i].x + " " + tmp[i].y);
+                    System.out.println(Ans[i].x + " " + Ans[i].y);
+                }
+                flag = true;
+            }
             return;
         }
-        int s = getStatus(tmpMap);
         if(Has(now,s)) return ;
-        dp[now][s] = 1;
-        int lx = box[now].lenx;
-        int ly = box[now].leny;
+        H[now].add(s);
+       // System.out.println(now + "  " + s
+        int lx = box[now+1].lenx;
+        int ly = box[now+1].leny;
+        //System.out.println(lx + " " + ly);
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++){
-                if(i + lx >= LX || j + ly >= LY) continue;
+                if(i + lx > LX || j + ly > LY) continue;
                 int hMap[][] = new int[30][30];
                 for(int k = 0; k < lx; k++)
                     for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] ^= box[now].s[k][f];
+                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
                     }
                 tmp[now].x = i;
                 tmp[now].y = j;
+                //System.out.println(tmp[now].x + " dd " + tmp[now].y);
                 go(now+1,tmp,tmpMap);
-
                 for(int k = 0; k < lx; k++)
                     for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] ^= box[now].s[k][f];
+                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f] * (Mod-1))) % Mod;
                     }
 
 
@@ -119,18 +136,39 @@ public class modulo {
         int Max = LX * LY;
         for(int i = 0; i < cnt; i++){
             tmpAns[i] = new Pair(0,0);
+            Ans[i] = new Pair(0,0);
         }
         int tmpMap[][] = new int[30][30];
         for(int i = 0; i < LX; i++)
             for(int j = 0; j < LY; j++){
                 tmpMap[i][j] = map[i][j];
             }
-        go(0,tmpAns,tmpMap);
+        for(int i = 0; i < 25; i++) {
+            H[i] = new HashSet<Integer>();
+            H[i].clear();
+        }
+        go(0, tmpAns, tmpMap);
     }
     public static void main(String args[]) {
         System.out.println(new Box("XXX,.XX"));
-        String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=40&go=Go+To+Level", "");
+        String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=22&go=Go+To+Level", "");
         work(str);
         solve();
+        /*
+        http://www.hacker.org/modulo/?seq=0000020000010000000103000001
+         */
+        String p = "http://www.hacker.org/modulo/?seq=";
+        for(int i = 0; i < cnt; i++){
+            int x = Ans[i].x;
+            int y = Ans[i].y;
+            System.out.println(x + "  " + y);
+            p += y/10 ;
+            p += y % 10 ;
+            p += x/10 ;
+            p += x % 10;
+
+        }
+        Utils.sendPost(p,"");
+        System.out.println(p);
     }
 }
