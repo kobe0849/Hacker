@@ -15,31 +15,7 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class CrossFlip {
-    static class MyThread implements Runnable{
-        int id;
-        private CountDownLatch runningThreadNum;
-        MyThread(int _id,CountDownLatch runningThreadNum){
-            id = _id;
-            this.runningThreadNum= runningThreadNum;
 
-        }
-        public void run() {
-            int i = id;
-            for(i = id; i < C; i+=10) {
-                //System.out.println(id + " " + i + " " + J + " " + I);
-               // System.out.println(mat[i].toString());
-                if(i != J && mat[i].get(I) == true){
-                   mat[i].xor(mat[J]);
-                }
-                //System.out.println("aa" + mat[i].toString());
-            }
-            sum  += 1;
-            //System.out.println(I + " " + J + " " + id + " " + sum);
-            runningThreadNum.countDown();
-
-
-        }
-    }
     static int sum = 0;
     static int C = 0;
     static int I = 0;
@@ -89,19 +65,11 @@ public class CrossFlip {
                 mat[k].set(f, mat[j].get(f));
                 mat[j].set(f, tmp);
             }
-            C = Max;
-            J = j;
-            sum = 0;
-            CountDownLatch runningThreadNum = new CountDownLatch(10);//初始化countDown
+            for (int f = 0; f < Max; f++)
+                if (f != j && mat[f].get(i) == true) {
+                    mat[f].xor(mat[j]);
+                }
 
-            for(int o = 0; o < 10; o++){
-                new Thread(new MyThread(o,runningThreadNum)).start();
-            }
-            try {
-                runningThreadNum.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
         }
         long endTime = System.currentTimeMillis(); //获取结束时间
