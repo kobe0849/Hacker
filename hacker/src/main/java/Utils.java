@@ -13,7 +13,7 @@ public class Utils {
         PrintWriter out = null;
         BufferedReader in = null;
         param+="&name=kobe0849&password=kobe20110849";
-        System.out.println(param);
+       // System.out.println(param);
         String result = "";
         try {
             URL realUrl = new URL(url);
