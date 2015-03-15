@@ -22,7 +22,7 @@ public class CrossFlip {
     static int J = 0;
     static int Row, Col;
     static char mp[][] = new char[2010][2010];
-    static MyBitSet mat[] = new MyBitSet[41010];
+    static MyBitSet mat[] = new MyBitSet[61010];
 
     static int getId(int x, int y) {
         return x * Col + y;

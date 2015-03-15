@@ -1,3 +1,7 @@
+import sun.misc.Sort;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -62,16 +66,19 @@ public class modulo {
         String a = "";
         for(int i = 0; i < mp2.length(); i++){
             if(mp2.charAt(i) == ' ' ){
-                box[++cnt] = new Box(a);
+                box[++cnt] = new Box(a,cnt);
                 a = "";
                 continue;
             }
             a += mp2.charAt(i);
         }
-        box[++cnt] = new Box(a);
+        box[++cnt] = new Box(a,cnt);
+
+        Arrays.sort(box,1,cnt+1);
         for(int i = 1; i <= cnt; i++){
             System.out.println(box[i]);
         }
+
     }
     static boolean Has(int id,int s){
         return  H[id].contains(s);
@@ -150,7 +157,6 @@ public class modulo {
         go(0, tmpAns, tmpMap);
     }
     public static void main(String args[]) {
-        System.out.println(new Box("XXX,.XX"));
         String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=22&go=Go+To+Level", "");
         work(str);
         solve();
