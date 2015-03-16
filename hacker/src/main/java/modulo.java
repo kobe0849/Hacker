@@ -20,6 +20,7 @@ public class modulo {
     static boolean flag;
     static HashSet<Long>H[] = new HashSet[40];
     static HashSet<Long> T = new HashSet<Long>();
+    static int res[] = new int[40];
     public static void work(String str){
         int len = str.length();
         String mp1 = "";
@@ -75,10 +76,10 @@ public class modulo {
         }
         box[++cnt] = new Box(a,cnt);
         System.out.println(cnt);
-        Hcnt = cnt/2;
+        Hcnt = cnt/2 + 1;
         Arrays.sort(box,1,cnt+1);
         for(int i = 1; i <= cnt; i++){
-            System.out.println(box[i]);
+            System.out.println("ID " + box[i].id + " " + box[i]);
         }
 
     }
@@ -95,6 +96,14 @@ public class modulo {
             }
         return s;
     }
+    static int needTime(int tmpMap[][]){
+        int cnt = 0;
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                cnt += (Mod - tmpMap[i][j]) % Mod;
+            }
+        return cnt;
+    }
     static void go1(int now,Pair tmp[],int tmpMap[][]){
         long s = getStatus(tmpMap);
         if(now == Hcnt ){
@@ -102,14 +111,23 @@ public class modulo {
             //System.out.println(s);
             return;
         }
+        /*
+        int rescnt = needTime(tmpMap);
+
+        System.out.println(now + " " + res[now+1]+ "  s " + rescnt);
+
+        if(res[now+1] < rescnt) return;
+        */
+
         if(Has(now,s)) return ;
         H[now].add(s);
-        // System.out.println(now + "  " + s
+
+
         int lx = box[now+1].lenx;
         int ly = box[now+1].leny;
-        //System.out.println(lx + " " + ly);
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++){
+               // if(now <= 0 && !(i==0 && j == 0)) continue;
                 if(i + lx > LX || j + ly > LY) continue;
                 for(int k = 0; k < lx; k++)
                     for(int f = 0; f < ly; f++){
@@ -147,6 +165,8 @@ public class modulo {
             }
             return;
         }
+       // int rescnt = needTime(tmpMap);;
+       // if(res[now+1] < rescnt) return;
         if(Has(now,s)) return ;
         H[now].add(s);
         int lx = box[now+1].lenx;
@@ -172,7 +192,7 @@ public class modulo {
         }
 
     }
-    static void go2(int now,Pair tmp[],int tmpMap[][]){
+    static void go2(int now,Pair tmp[], int tmpMap[][]){
        if(flag) return;
         long s = getStatus(tmpMap);
         //System.out.println(s);
@@ -201,6 +221,7 @@ public class modulo {
         //System.out.println(lx + " " + ly);
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++){
+               // if(now <= 0 && !(i==0 && j == 0)) continue;
                 if(i + lx > LX || j + ly > LY) continue;
                 int hMap[][] = new int[32][32];
                 for(int k = 0; k < lx; k++)
@@ -223,6 +244,13 @@ public class modulo {
 
     }
     static void solve(){
+        res[cnt+1] = 0;
+        for(int i = cnt ; i >= 1; i--){
+            res[i] = res[i+1] + box[i].size;
+        }
+        System.out.println(res[1]);
+        System.out.println(needTime(map));
+
         T.clear();
         flag = false;
         int Max = LX * LY;
@@ -260,7 +288,9 @@ public class modulo {
             for(int j = 0; j < LY; j++){
                 tmpMap[i][j] = map[i][j];
             }
-        go2(0,tmpAns,tmpMap);
+
+        if(SS != 0)
+            go2(0,tmpAns,tmpMap);
     }
 
     public static void main(String args[]) {
@@ -271,17 +301,107 @@ public class modulo {
         http://www.hacker.org/modulo/?seq=0000020000010000000103000001
          */
         String p = "http://www.hacker.org/modulo/?seq=";
-        for(int i = 0; i < cnt; i++){
+        int tx[] = new int[50];
+        int ty[] = new int[50];
+       /*for(int i = 0; i < cnt; i++){
             int x = Ans[i].x;
             int y = Ans[i].y;
+            System.out.println("hhe " + box[i+1].id + " " + x +" " + y);
+            p += y/10 ;
+            p += y % 10 ;
+            p += x/10 ;
+            p += x % 10;
+        }
+*/
+        for(int i = 0; i < cnt; i++){
+            System.out.println("sdsd" + box[i+1].id);
+            int x = Ans[i].x;
+            int y = Ans[i].y;
+            tx[box[i+1].id - 1] = x;
+            ty[box[i+1].id - 1] = y;
+
             System.out.println(x + "  " + y);
+
+
+        }
+        for(int i = 0; i < cnt; i++){
+            int x = tx[i];
+            int y = ty[i];
             p += y/10 ;
             p += y % 10 ;
             p += x/10 ;
             p += x % 10;
 
         }
-        Utils.sendPost(p,"");
+
+        Utils.sendPost(p, "");
         System.out.println(p);
     }
 }
+/*
+
+sdsd3
+0  0
+sdsd8
+0  0
+sdsd10
+1  4
+sdsd1
+1  1
+sdsd6
+1  2
+sdsd7
+0  3
+sdsd11
+1  0
+sdsd12
+1  2
+sdsd2
+0  2
+sdsd9
+3  2
+sdsd4
+2  0
+sdsd5
+0  3
+http://www.hacker.org/modulo/?seq=010102000000000203000201030000000203040100010201
+
+*/
+
+/*
+sdsd6
+3  0
+sdsd7
+3  1
+sdsd9
+2  1
+sdsd11
+4  0
+sdsd12
+5  1
+sdsd15
+1  2
+sdsd13
+3  2
+sdsd14
+4  0
+sdsd2
+1  0
+sdsd3
+0  1
+sdsd8
+3  0
+sdsd10
+3  0
+sdsd4
+1  0
+sdsd1
+1  0
+sdsd5
+2  0
+
+*/
+/*
+
+
+ */

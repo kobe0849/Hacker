@@ -5,6 +5,7 @@ import java.util.Comparator;
  */
 public class Box implements Comparable<Box>{
     int lenx,leny;
+    int S;
     int id;
     int size;
     int s[][];
@@ -27,6 +28,7 @@ public class Box implements Comparable<Box>{
             }
         }
         lenx++;
+        S = lenx * leny;
     };
     @Override
     public String toString(){
@@ -48,6 +50,6 @@ public class Box implements Comparable<Box>{
     @Override
         public int compareTo(Box o) {
                 // 按名字排序
-                 return  o.size - this.size;
+                 return  o.S - this.S;
            }
 }
