@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5602dd55-edf2-4948-bf40-d35884c25edb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/target/classes/CrossFlip.class" afterPath="$PROJECT_DIR$/hacker/target/classes/CrossFlip.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/target/classes/MyBitSet.class" afterPath="$PROJECT_DIR$/hacker/target/classes/MyBitSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/src/main/java/CrossFlip.java" afterPath="$PROJECT_DIR$/hacker/src/main/java/CrossFlip.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/hacker.iml" afterPath="$PROJECT_DIR$/hacker/hacker.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/pom.xml" afterPath="$PROJECT_DIR$/hacker/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/target/classes/Box.class" afterPath="$PROJECT_DIR$/hacker/target/classes/Box.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/target/classes/modulo.class" afterPath="$PROJECT_DIR$/hacker/target/classes/modulo.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/src/main/java/Box.java" afterPath="$PROJECT_DIR$/hacker/src/main/java/Box.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/src/main/java/modulo.java" afterPath="$PROJECT_DIR$/hacker/src/main/java/modulo.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hacker/.idea/workspace.xml" afterPath="$PROJECT_DIR$/hacker/.idea/workspace.xml" />
     </list>
     <ignored path="Hacker.iws" />
@@ -34,7 +33,7 @@
       <file leaf-file-name="Box.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hacker/src/main/java/Box.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="690">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -80,7 +79,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -181,6 +179,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -449,15 +448,16 @@
       <updated>1426140315621</updated>
       <workItem from="1426140316200" duration="30000" />
       <workItem from="1426343611777" duration="28000" />
+      <workItem from="1426493142834" duration="5000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58000" />
+    <option name="totallyTimeSpent" value="63000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="119" y="60" width="1119" height="651" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -508,6 +508,14 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/hacker/src/main/java/Box.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/hacker/src/main/java/Box.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="690">

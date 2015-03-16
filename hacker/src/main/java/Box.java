@@ -47,9 +47,16 @@ public class Box implements Comparable<Box>{
         return ans;
 
     }
+    public int getScore(){
+        int score = 0;
+        //if(s[lenx-1][leny-1] != 0)
+        //    score += 1000;
+        score += (7-lenx) * (6 - leny);
+        return score;
+    }
     @Override
         public int compareTo(Box o) {
                 // 按名字排序
-                 return  o.S - this.S;
+                 return  -o.getScore() + this.getScore();
            }
 }

@@ -1,27 +1,439 @@
 import sun.misc.Sort;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * Created by feixia on 15/3/13.
  */
 public class modulo {
-    static  int Mod = 3;
+    static  int Mod = 4;
+    static int leftTop[] = new int[40];
+    static int leftDown[] = new int[40];
+    static int rightTop[] = new int[40];
+    static int rightDown[] = new int[40];
     static int map[][] = new int[20][20];
     static Box box[] = new Box[100];
-    static int LX,LY;
-    static int cnt,Hcnt;
+    static int LX,LY,Max;
+    static int cnt,Hcnt = 9;
     static Pair Ans[] = new Pair[42];
     static Pair tmpAns[] = new Pair[42];
     static boolean flag;
     static HashSet<Long>H[] = new HashSet[40];
+    static HashSet<Long>HS[] = new HashSet[40];
     static HashSet<Long> T = new HashSet<Long>();
     static int res[] = new int[40];
+    static long PreS;
+    static boolean Has(int id,long s){
+        return  H[id].contains(s);
+    }
+    static void printSet(HashSet<Long>A){
+
+    }
+    static void gaoLeft(){
+        HS[cnt] = new HashSet<Long>();
+        HS[cnt].add(0l);
+        for(int now = cnt; now >= 1; now--) {
+            HS[now-1] = new HashSet<Long>();
+            Iterator<Long> iterator = HS[now].iterator();
+            while (iterator.hasNext()) {
+                Long st = iterator.next();
+                if(now >= cnt-1)
+                System.out.println(st);
+                HS[now-1].add(st);
+                int lenx = box[now].lenx;
+                int leny = box[now].leny;
+                Long tmpl[] = new Long[20];
+                Long tmpr[] = new Long[20];
+                Long ts = st;
+                for (int i = 0; i < LX; i++) {
+                    tmpl[LX - i - 1] = ts % Mod;
+                    ts /= Mod;
+                }
+                for(int i = 0; i < LX; i++) {
+                    tmpr[LX - i - 1] = ts % Mod;
+                    ts /= Mod;
+                }
+/*
+
+                Long t2l[] = new Long[20];
+                Long t2r[] = new Long[20];
+                for(int i = 0; i < LX; i++) {
+                    for (int j = 0; j < 1; j++) {
+                        if (i + lenx > LX || j + leny > LY) continue;
+
+                        for(int k = 0; k < LX; k++){
+                            t2l[k] = tmpl[k];
+                            t2r[k] = tmpr[k];
+                        }
+
+                        for(int k = 0; k < lenx; k++){
+                            int xx = i + k;
+                            int yy = j;
+                            if(yy == 0){
+                                if (box[now].s[k][0] == 1) {
+                                    t2l[xx] = (t2l[xx] - 1 + Mod) % Mod;
+                                }
+                            }
+                            yy = j +  1;
+                            if(yy == 1){
+                                if (box[now].s[k][1] == 1) {
+                                    t2r[xx] = (t2r[xx] - 1 + Mod) % Mod;
+                                }
+                            }
+
+                        }
+
+                        Long ss = 0l;
+                        for (int k = 0; k < LX; k++) {
+                            ss = ss * Mod + t2r[k];
+                            if(now == cnt){
+                                System.out.println(t2r[k]);
+                            }
+                        }
+                        for (int k = 0; k < LX; k++) {
+                            ss = ss * Mod + t2l[k];
+                        }
+                        HS[now-1].add(ss);
+
+                    }
+                }
+                */
+
+                Long t2[] = new Long[20];
+                for (int i = 0; i + lenx - 1< LX; i++) {
+
+                   for (int j = 0; j < LX; j++) {
+                        t2[j] = tmpl[j];
+                    }
+                    for (int j = 0; j < lenx; j++) {
+                        int k = i + j;
+                        if (box[now].s[j][0] == 1) {
+                            t2[k] = (t2[k] - 1 + Mod) % Mod;
+                        }
+                    }
+                    Long ss = 0l;
+                    for (int j = 0; j < LX; j++) {
+                        ss = ss * Mod + t2[j];
+                    }
+                    HS[now-1].add(ss);
+                }
+
+            }
+            System.out.println(now + "  ff " + HS[now-1].size());
+
+        }
+
+    }
+    static long getStatus(int tmpMap[][]){
+        long s = 0;
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                s = s * Mod + tmpMap[i][j];
+            }
+
+       /* for (int k = 0; k < LX; k++) {
+            s = s * Mod + tmpMap[k][1];
+        }
+        for (int k = 0; k < LX; k++) {
+            s = s * Mod + tmpMap[k][0];
+        }
+        */
+        return s;
+    }
+    static long getLeftStatus(int tmpMap[][]){
+        long s = 0;
+        for(int i = 0; i < LX; i++){
+            s = s * Mod + tmpMap[i][0];
+        }
+        return s;
+    }
+    static int needTime(int tmpMap[][]){
+        int cnt = 0;
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                cnt += (Mod - tmpMap[i][j]) % Mod;
+            }
+        return cnt;
+    }
+    static boolean checkEdge(int now,int tmpMap[][]){
+        int cnt1 = (Mod - tmpMap[0][0]) % Mod;
+        if(cnt1 > leftTop[now+1]){
+            return false;
+        }
+        cnt1 = (Mod - tmpMap[LX - 1][0]) % Mod;
+        if(cnt1 > leftDown[now+1]){
+            return false;
+        }
+        cnt1 = (Mod - tmpMap[0][LY-1]) % Mod;
+        if(cnt1 > rightTop[now+1]){
+            return false;
+        }
+        cnt1 = (Mod - tmpMap[LX-1][LY-1]) % Mod;
+        if(cnt1 > rightDown[now+1]){
+            return false;
+        }
+        return true;
+    }
+    static void Solve(){
+        T.clear();
+        flag = false;
+        Max = LX * LY;
+        for(int i = 0; i < cnt; i++){
+            tmpAns[i] = new Pair(0,0);
+            Ans[i] = new Pair(0,0);
+        }
+        int tmpMap[][] = new int[30][30];
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                tmpMap[i][j] = map[i][j];
+            }
+
+        for(int i = 0; i < 40; i++) {
+            H[i] = new HashSet<Long>();
+            H[i].clear();
+        }
+        go(0, tmpAns, tmpMap, 1);
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                tmpMap[i][j] = 0;
+            }
+        System.out.println("go1Over" + ": " + T.size());
+        flag = false;
+        for(int i = 0; i < 40; i++) {
+            H[i].clear();
+        }
+        go(Hcnt, tmpAns, tmpMap, 2);
+        System.out.println("goOver");
+        for(int i = 0; i < 40; i++) {
+            H[i].clear();
+        }
+
+        flag = false;
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                tmpMap[i][j] = map[i][j];
+            }
+
+        if(PreS != 0)
+            go(0, tmpAns, tmpMap, 3);
+    }
+    static void go0(int now,int tmpMap[][]){
+        if(now == 2){
+            Solve();
+        }
+        int lx = box[now+1].lenx;
+        int ly = box[now+1].leny;
+        for(int i = 0; i < LX; i++){
+            for(int j = 0; j < LY; j++){
+                if(i + lx > LX || j + ly > LY) continue;
+                for(int k = 0; k < lx; k++)
+                    for(int f = 0; f < ly; f++){
+                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
+                    }
+                go0(now + 1, tmpMap);
+                for(int k = 0; k < lx; k++)
+                    for(int f = 0; f < ly; f++){
+                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f]) * (Mod-1)) % Mod;
+                    }
+            }
+
+        }
+
+    }
+    static void go(int now,Pair tmp[],int tmpMap[][],int goID){
+        long s = getStatus(tmpMap);
+        if(goID == 1) {
+            if (now == Hcnt) {
+                T.add(s);
+                return;
+            }
+            long lstatus = getLeftStatus(tmpMap);
+            //System.out.println("lstatus: "+ lstatus + " " + HS[now].size());
+            /*
+            if(!HS[now].contains(lstatus)) {
+                return;
+            }
+            */
+            if(!checkEdge(now, tmpMap)) {
+                //System.out.println("sdsd");
+                return;
+            }
+
+        }else if(goID == 2){
+            if(flag) return;
+            if(now == cnt){
+                if(T.contains(s)) {
+                    for (int i = Hcnt; i < cnt; i++) {
+                        Ans[i].x = tmp[i].x;
+                        Ans[i].y = tmp[i].y;
+                    }
+                    PreS = s;
+                    flag = true;
+                }
+                return;
+            }
+        }else{
+            if(flag) return;
+            if(now == Hcnt){
+                if(s == PreS) {
+                    for (int i = 0; i < Hcnt; i++) {
+                        Ans[i].x = tmp[i].x;
+                        Ans[i].y = tmp[i].y;
+                    }
+                    flag = true;
+                }
+                return;
+            }
+           // long lstatus = getLeftStatus(tmpMap);
+           // if(!HS[now].contains(lstatus)) return;
+
+            if(!checkEdge(now,tmpMap)) {
+                return;
+            }
+
+        }
+        if(Has(now,s)) return ;
+        H[now].add(s);
+      //  System.out.println("  sd " + now);
+        int lx = box[now+1].lenx;
+        int ly = box[now+1].leny;
+        for(int i = 0; i < LX; i++){
+            for(int j = 0; j < LY; j++){
+                if((goID == 1 || goID == 3) ) continue;
+               if(i + lx > LX || j + ly > LY) continue;
+                for(int k = 0; k < lx; k++)
+                    for(int f = 0; f < ly; f++){
+                        if(goID == 1 || goID == 3)
+                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
+                        else{
+                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f]) * (Mod-1)) % Mod;
+                        }
+                    }
+                tmp[now].x = i;
+                tmp[now].y = j;
+                go(now + 1, tmp, tmpMap,goID);
+                for(int k = 0; k < lx; k++)
+                    for(int f = 0; f < ly; f++){
+                        if(goID == 2)
+                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
+                        else{
+                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f]) * (Mod-1)) % Mod;
+                        }
+                    }
+
+
+            }
+
+        }
+    }
+    static void init(){
+        System.out.println(cnt);
+        Arrays.sort(box,1,cnt+1);
+        for(int i = 1; i <= cnt; i++){
+            System.out.println("ID " + box[i].id + " " + box[i] + " f " + box[i].lenx);
+        }
+        res[cnt+1] = 0;
+        for(int i = cnt ; i >= 1; i--){
+            res[i] = res[i+1] + box[i].size;
+        }
+        //leftTop
+        leftTop[cnt+1] = 0;
+        for(int i = cnt; i >= 1; i--){
+            leftTop[i] = leftTop[i+1] + box[i].s[0][0];
+        }
+        //rightTop
+        rightTop[cnt+1] = 0;
+        for(int i = cnt; i >= 1; i--){
+            int ly = box[i].leny;
+            rightTop[i] = rightTop[i+1] + box[i].s[0][ly-1];
+        }
+        //leftDown
+        leftDown[cnt+1] = 0;
+        for(int i = cnt; i >= 1; i--){
+            int lx = box[i].lenx;
+            leftDown[i] = leftDown[i+1] + box[i].s[lx-1][0];
+        }
+        //rightDown
+        rightDown[cnt+1] = 0;
+        for(int i = cnt; i >= 1; i--){
+            int ly = box[i].leny;
+            int lx = box[i].lenx;
+            rightDown[i] = rightDown[i+1] + box[i].s[lx-1][ly-1];
+            System.out.println(i + " " + rightDown[i]);
+        }
+    }
+    static void solve(){
+        init();
+        gaoLeft();
+        T.clear();
+        flag = false;
+        Max = LX * LY;
+        for(int i = 0; i < cnt; i++){
+            tmpAns[i] = new Pair(0,0);
+            Ans[i] = new Pair(0,0);
+        }
+        int tmpMap[][] = new int[30][30];
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                tmpMap[i][j] = map[i][j];
+            }
+
+        for(int i = 0; i < 40; i++) {
+            H[i] = new HashSet<Long>();
+            H[i].clear();
+        }
+        go(0, tmpAns, tmpMap, 1);
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                tmpMap[i][j] = 0;
+            }
+        System.out.println("go1Over" + ": " + T.size());
+        flag = false;
+        for(int i = 0; i < 40; i++) {
+            H[i].clear();
+        }
+        go(Hcnt, tmpAns, tmpMap, 2);
+        System.out.println("goOver");
+        for(int i = 0; i < 40; i++) {
+            H[i].clear();
+        }
+
+        flag = false;
+        for(int i = 0; i < LX; i++)
+            for(int j = 0; j < LY; j++){
+                tmpMap[i][j] = map[i][j];
+            }
+
+        if(PreS != 0)
+            go(0, tmpAns, tmpMap, 3);
+    }
+    public static void main(String args[]) {
+        String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=22&go=Go+To+Level", "");
+        work(str);
+        solve();
+        String p = "http://www.hacker.org/modulo/?seq=";
+        int tx[] = new int[50];
+        int ty[] = new int[50];
+        for(int i = 0; i < cnt; i++){
+            int x = Ans[i].x;
+            int y = Ans[i].y;
+            tx[box[i+1].id - 1] = x;
+            ty[box[i+1].id - 1] = y;
+        }
+        for(int i = 0; i < cnt; i++){
+            int x = tx[i];
+            int y = ty[i];
+            p += y/10 ;
+            p += y % 10 ;
+            p += x/10 ;
+            p += x % 10;
+
+        }
+        System.out.println(p);
+    }
     public static void work(String str){
+
         int len = str.length();
         String mp1 = "";
         String mp2 = "";
@@ -75,333 +487,6 @@ public class modulo {
             a += mp2.charAt(i);
         }
         box[++cnt] = new Box(a,cnt);
-        System.out.println(cnt);
-        Hcnt = cnt/2 + 1;
-        Arrays.sort(box,1,cnt+1);
-        for(int i = 1; i <= cnt; i++){
-            System.out.println("ID " + box[i].id + " " + box[i]);
-        }
 
-    }
-    static boolean Has(int id,long s){
-        //System.out.println(id + " " + s);
-        return  H[id].contains(s);
-    }
-    static  long getStatus(int tmpMap[][]){
-        long s = 0;
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                s = s * Mod + tmpMap[i][j];
-
-            }
-        return s;
-    }
-    static int needTime(int tmpMap[][]){
-        int cnt = 0;
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                cnt += (Mod - tmpMap[i][j]) % Mod;
-            }
-        return cnt;
-    }
-    static void go1(int now,Pair tmp[],int tmpMap[][]){
-        long s = getStatus(tmpMap);
-        if(now == Hcnt ){
-            T.add(s);
-            //System.out.println(s);
-            return;
-        }
-        /*
-        int rescnt = needTime(tmpMap);
-
-        System.out.println(now + " " + res[now+1]+ "  s " + rescnt);
-
-        if(res[now+1] < rescnt) return;
-        */
-
-        if(Has(now,s)) return ;
-        H[now].add(s);
-
-
-        int lx = box[now+1].lenx;
-        int ly = box[now+1].leny;
-        for(int i = 0; i < LX; i++){
-            for(int j = 0; j < LY; j++){
-               // if(now <= 0 && !(i==0 && j == 0)) continue;
-                if(i + lx > LX || j + ly > LY) continue;
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
-                    }
-                tmp[now].x = i;
-                tmp[now].y = j;
-                //System.out.println(tmp[now].x + " dd " + tmp[now].y);
-                go1(now + 1, tmp, tmpMap);
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f] * (Mod-1))) % Mod;
-                    }
-
-
-            }
-
-        }
-    }
-    static long SS;
-    static void go(int now,Pair tmp[],int tmpMap[][]){
-        if(flag) return;
-        long s = getStatus(tmpMap);
-        if(now == cnt){
-            //System.out.println(s);
-            if(T.contains(s)) {
-                for (int i = Hcnt; i < cnt; i++) {
-                    Ans[i].x = tmp[i].x;
-                    Ans[i].y = tmp[i].y;
-                    System.out.println(tmp[i].x + " " + tmp[i].y);
-                    System.out.println(Ans[i].x + " " + Ans[i].y);
-                }
-                SS = s;
-                flag = true;
-            }
-            return;
-        }
-       // int rescnt = needTime(tmpMap);;
-       // if(res[now+1] < rescnt) return;
-        if(Has(now,s)) return ;
-        H[now].add(s);
-        int lx = box[now+1].lenx;
-        int ly = box[now+1].leny;
-        for(int i = 0; i < LX; i++){
-            for(int j = 0; j < LY; j++){
-                if(i + lx > LX || j + ly > LY) continue;
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f]) * (Mod-1)) % Mod;
-                    }
-                tmp[now].x = i;
-                tmp[now].y = j;
-                go(now+1,tmp,tmpMap);
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
-                    }
-
-
-            }
-
-        }
-
-    }
-    static void go2(int now,Pair tmp[], int tmpMap[][]){
-       if(flag) return;
-        long s = getStatus(tmpMap);
-        //System.out.println(s);
-        if(now == Hcnt){
-            if(s == SS) {
-                System.out.println("ssdsds");
-                for (int i = 0; i < Hcnt; i++) {
-                    Ans[i].x = tmp[i].x;
-                    Ans[i].y = tmp[i].y;
-
-                    System.out.println(tmp[i].x + " 2 " + tmp[i].y);
-                    System.out.println(Ans[i].x + " 2 " + Ans[i].y);
-                }
-                flag = true;
-            }
-            return;
-        }
-        if(Has(now,s)) {
-           // System.out.println("hh");
-            return ;
-        }
-        H[now].add(s);
-        //System.out.println(now + "  " + s);
-        int lx = box[now+1].lenx;
-        int ly = box[now+1].leny;
-        //System.out.println(lx + " " + ly);
-        for(int i = 0; i < LX; i++){
-            for(int j = 0; j < LY; j++){
-               // if(now <= 0 && !(i==0 && j == 0)) continue;
-                if(i + lx > LX || j + ly > LY) continue;
-                int hMap[][] = new int[32][32];
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
-                    }
-                tmp[now].x = i;
-                tmp[now].y = j;
-                //System.out.println(tmp[now].x + " dd " + tmp[now].y);
-                go2(now + 1, tmp, tmpMap);
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                        tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f] * (Mod-1))) % Mod;
-                    }
-
-
-            }
-
-        }
-
-    }
-    static void solve(){
-        res[cnt+1] = 0;
-        for(int i = cnt ; i >= 1; i--){
-            res[i] = res[i+1] + box[i].size;
-        }
-        System.out.println(res[1]);
-        System.out.println(needTime(map));
-
-        T.clear();
-        flag = false;
-        int Max = LX * LY;
-        for(int i = 0; i < cnt; i++){
-            tmpAns[i] = new Pair(0,0);
-            Ans[i] = new Pair(0,0);
-        }
-        int tmpMap[][] = new int[30][30];
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                tmpMap[i][j] = map[i][j];
-            }
-        for(int i = 0; i < 40; i++) {
-            H[i] = new HashSet<Long>();
-            H[i].clear();
-        }
-        go1(0, tmpAns, tmpMap);
-
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                tmpMap[i][j] = 0;
-            }
-        System.out.println("go1Over" + ": " + T.size());
-        flag = false;
-        for(int i = 0; i < 40; i++) {
-            H[i].clear();
-        }
-        go(Hcnt, tmpAns, tmpMap);
-        System.out.println("goOver" + T.size());
-        for(int i = 0; i < 40; i++) {
-            H[i].clear();
-        }
-        flag = false;
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                tmpMap[i][j] = map[i][j];
-            }
-
-        if(SS != 0)
-            go2(0,tmpAns,tmpMap);
-    }
-
-    public static void main(String args[]) {
-        String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=22&go=Go+To+Level", "");
-        work(str);
-        solve();
-        /*
-        http://www.hacker.org/modulo/?seq=0000020000010000000103000001
-         */
-        String p = "http://www.hacker.org/modulo/?seq=";
-        int tx[] = new int[50];
-        int ty[] = new int[50];
-       /*for(int i = 0; i < cnt; i++){
-            int x = Ans[i].x;
-            int y = Ans[i].y;
-            System.out.println("hhe " + box[i+1].id + " " + x +" " + y);
-            p += y/10 ;
-            p += y % 10 ;
-            p += x/10 ;
-            p += x % 10;
-        }
-*/
-        for(int i = 0; i < cnt; i++){
-            System.out.println("sdsd" + box[i+1].id);
-            int x = Ans[i].x;
-            int y = Ans[i].y;
-            tx[box[i+1].id - 1] = x;
-            ty[box[i+1].id - 1] = y;
-
-            System.out.println(x + "  " + y);
-
-
-        }
-        for(int i = 0; i < cnt; i++){
-            int x = tx[i];
-            int y = ty[i];
-            p += y/10 ;
-            p += y % 10 ;
-            p += x/10 ;
-            p += x % 10;
-
-        }
-
-        Utils.sendPost(p, "");
-        System.out.println(p);
     }
 }
-/*
-
-sdsd3
-0  0
-sdsd8
-0  0
-sdsd10
-1  4
-sdsd1
-1  1
-sdsd6
-1  2
-sdsd7
-0  3
-sdsd11
-1  0
-sdsd12
-1  2
-sdsd2
-0  2
-sdsd9
-3  2
-sdsd4
-2  0
-sdsd5
-0  3
-http://www.hacker.org/modulo/?seq=010102000000000203000201030000000203040100010201
-
-*/
-
-/*
-sdsd6
-3  0
-sdsd7
-3  1
-sdsd9
-2  1
-sdsd11
-4  0
-sdsd12
-5  1
-sdsd15
-1  2
-sdsd13
-3  2
-sdsd14
-4  0
-sdsd2
-1  0
-sdsd3
-0  1
-sdsd8
-3  0
-sdsd10
-3  0
-sdsd4
-1  0
-sdsd1
-1  0
-sdsd5
-2  0
-
-*/
-/*
-
-
- */
