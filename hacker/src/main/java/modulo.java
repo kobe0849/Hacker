@@ -19,7 +19,7 @@ public class modulo {
     static Pair tmpAns[] = new Pair[42];
     static boolean flag;
     static HashSet<Long>H[] = new HashSet[40];
-    static HashMap<Long,Integer> T = new HashMap<Long,Integer>();
+    static HashSet<Long> T = new HashSet<Long>();
     public static void work(String str){
         int len = str.length();
         String mp1 = "";
@@ -76,7 +76,7 @@ public class modulo {
         box[++cnt] = new Box(a,cnt);
         System.out.println(cnt);
         Hcnt = cnt/2;
-       // Arrays.sort(box,1,cnt+1);
+        Arrays.sort(box,1,cnt+1);
         for(int i = 1; i <= cnt; i++){
             System.out.println(box[i]);
         }
@@ -98,7 +98,7 @@ public class modulo {
     static void go1(int now,Pair tmp[],int tmpMap[][]){
         long s = getStatus(tmpMap);
         if(now == Hcnt ){
-            T.put(s, 1);
+            T.add(s);
             //System.out.println(s);
             return;
         }
@@ -133,15 +133,12 @@ public class modulo {
     static void go(int now,Pair tmp[],int tmpMap[][]){
         if(flag) return;
         long s = getStatus(tmpMap);
-       // System.out.println(now + " " + s + " "+Hcnt);
         if(now == cnt){
-            System.out.println(s);
-            if(T.containsKey(s)) {
-               System.out.println("ssdsds");
+            //System.out.println(s);
+            if(T.contains(s)) {
                 for (int i = Hcnt; i < cnt; i++) {
                     Ans[i].x = tmp[i].x;
                     Ans[i].y = tmp[i].y;
-
                     System.out.println(tmp[i].x + " " + tmp[i].y);
                     System.out.println(Ans[i].x + " " + Ans[i].y);
                 }
@@ -152,21 +149,17 @@ public class modulo {
         }
         if(Has(now,s)) return ;
         H[now].add(s);
-       // System.out.println(now + "  " + s
         int lx = box[now+1].lenx;
         int ly = box[now+1].leny;
-        //System.out.println(lx + " " + ly);
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++){
                 if(i + lx > LX || j + ly > LY) continue;
-                int hMap[][] = new int[32][32];
                 for(int k = 0; k < lx; k++)
                     for(int f = 0; f < ly; f++){
                         tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f]) * (Mod-1)) % Mod;
                     }
                 tmp[now].x = i;
                 tmp[now].y = j;
-                //System.out.println(tmp[now].x + " dd " + tmp[now].y);
                 go(now+1,tmp,tmpMap);
                 for(int k = 0; k < lx; k++)
                     for(int f = 0; f < ly; f++){
@@ -180,8 +173,7 @@ public class modulo {
 
     }
     static void go2(int now,Pair tmp[],int tmpMap[][]){
-       /// System.out.println(now + "sdsd" + Hcnt + " " + SS);
-        if(flag) return;
+       if(flag) return;
         long s = getStatus(tmpMap);
         //System.out.println(s);
         if(now == Hcnt){
@@ -232,8 +224,6 @@ public class modulo {
     }
     static void solve(){
         T.clear();
-        //T.put(77784109037l,1);
-        //System.out.println(T.containsKey(77784109037l));
         flag = false;
         int Max = LX * LY;
         for(int i = 0; i < cnt; i++){
@@ -249,12 +239,13 @@ public class modulo {
             H[i] = new HashSet<Long>();
             H[i].clear();
         }
-        go1(0,tmpAns,tmpMap);
+        go1(0, tmpAns, tmpMap);
+
         for(int i = 0; i < LX; i++)
             for(int j = 0; j < LY; j++){
                 tmpMap[i][j] = 0;
             }
-        System.out.println("go1Over");
+        System.out.println("go1Over" + ": " + T.size());
         flag = false;
         for(int i = 0; i < 40; i++) {
             H[i].clear();
