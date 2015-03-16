@@ -118,9 +118,7 @@ public class CrossFlip {
         int Max = getId(Row - 1, Col - 1) + 1;
 
         for (int i = 0; i <= Max; i++) {
-            mat[i] = new MyBitSet(Max + 5);
             mat[i].clear();
-
         }
 
         for (int i = 0; i < Row; i++)
@@ -146,7 +144,13 @@ public class CrossFlip {
         //System.out.println(ans);
         return ans;
     }
+    static void Init(){
+        int Gmax = 240 * 240;
+        for(int i = 0; i < Gmax; i++){
+            mat[i] = new MyBitSet(Gmax);
+        }
 
+    }
     static void goUp(int x, int y) {
         for (int i = 0; ; i++) {
             if (x - i < 0 || mp[x - i][y] == '2') break;
@@ -186,8 +190,8 @@ public class CrossFlip {
     }
 
     public static void main(String args[]) {
-
-       for (Integer level = 500; level <= 600; level++) {
+        Init()
+ ;      for (Integer level = 500; level <= 600; level++) {
             String str = Utils.sendPost("http://www.hacker.org/cross/index.php", "");
             String ans = work(str,level);
             Utils.sendPost("http://www.hacker.org/cross/?", ans);
