@@ -48,6 +48,6 @@ public class Box implements Comparable<Box>{
     @Override
         public int compareTo(Box o) {
                 // 按名字排序
-                 return  o.size - this.size;
+                 return - o.size + this.size;
            }
 }
