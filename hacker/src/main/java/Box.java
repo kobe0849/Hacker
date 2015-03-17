@@ -9,17 +9,23 @@ public class Box implements Comparable<Box>{
     int id;
     int size;
     int s[][];
+    int x[];
+    int y[];
     Box(String str,int _id){
         size = 0;
         id = _id;
         int len = str.length();
         s = new int[30][30];
+        x = new int[30];
+        y = new int[30];
         lenx = 0;
         leny = 0;
         for(int i = 0; i < len; i++){
             if(str.charAt(i) == 'X'){
                 s[lenx][leny++] = 1;
                 size++;
+                x[size-1] = lenx;
+                y[size-1] = leny-1;
             }else if(str.charAt(i) == '.'){
                 s[lenx][leny++] = 0;
             }else{

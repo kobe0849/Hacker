@@ -6,8 +6,12 @@ import java.util.*;
 /**
  * Created by feixia on 15/3/13.
  */
+/*
+
+http://www.hacker.org/modulo/?seq=0204000201000200020100000000040204010001010301000301020002020502
+ */
 public class modulo {
-    static  int Mod = 4;
+    static  int Mod = 3;
     static int leftTop[] = new int[40];
     static int leftDown[] = new int[40];
     static int rightTop[] = new int[40];
@@ -15,7 +19,7 @@ public class modulo {
     static int map[][] = new int[20][20];
     static Box box[] = new Box[100];
     static int LX,LY,Max;
-    static int cnt,Hcnt = 9;
+    static int cnt,Hcnt = 6;
     static Pair Ans[] = new Pair[42];
     static Pair tmpAns[] = new Pair[42];
     static boolean flag;
@@ -26,9 +30,6 @@ public class modulo {
     static long PreS;
     static boolean Has(int id,long s){
         return  H[id].contains(s);
-    }
-    static void printSet(HashSet<Long>A){
-
     }
     static void gaoLeft(){
         HS[cnt] = new HashSet<Long>();
@@ -54,52 +55,6 @@ public class modulo {
                     tmpr[LX - i - 1] = ts % Mod;
                     ts /= Mod;
                 }
-/*
-
-                Long t2l[] = new Long[20];
-                Long t2r[] = new Long[20];
-                for(int i = 0; i < LX; i++) {
-                    for (int j = 0; j < 1; j++) {
-                        if (i + lenx > LX || j + leny > LY) continue;
-
-                        for(int k = 0; k < LX; k++){
-                            t2l[k] = tmpl[k];
-                            t2r[k] = tmpr[k];
-                        }
-
-                        for(int k = 0; k < lenx; k++){
-                            int xx = i + k;
-                            int yy = j;
-                            if(yy == 0){
-                                if (box[now].s[k][0] == 1) {
-                                    t2l[xx] = (t2l[xx] - 1 + Mod) % Mod;
-                                }
-                            }
-                            yy = j +  1;
-                            if(yy == 1){
-                                if (box[now].s[k][1] == 1) {
-                                    t2r[xx] = (t2r[xx] - 1 + Mod) % Mod;
-                                }
-                            }
-
-                        }
-
-                        Long ss = 0l;
-                        for (int k = 0; k < LX; k++) {
-                            ss = ss * Mod + t2r[k];
-                            if(now == cnt){
-                                System.out.println(t2r[k]);
-                            }
-                        }
-                        for (int k = 0; k < LX; k++) {
-                            ss = ss * Mod + t2l[k];
-                        }
-                        HS[now-1].add(ss);
-
-                    }
-                }
-                */
-
                 Long t2[] = new Long[20];
                 for (int i = 0; i + lenx - 1< LX; i++) {
 
@@ -175,72 +130,6 @@ public class modulo {
         }
         return true;
     }
-    static void Solve(){
-        T.clear();
-        flag = false;
-        Max = LX * LY;
-        for(int i = 0; i < cnt; i++){
-            tmpAns[i] = new Pair(0,0);
-            Ans[i] = new Pair(0,0);
-        }
-        int tmpMap[][] = new int[30][30];
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                tmpMap[i][j] = map[i][j];
-            }
-
-        for(int i = 0; i < 40; i++) {
-            H[i] = new HashSet<Long>();
-            H[i].clear();
-        }
-        go(0, tmpAns, tmpMap, 1);
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                tmpMap[i][j] = 0;
-            }
-        System.out.println("go1Over" + ": " + T.size());
-        flag = false;
-        for(int i = 0; i < 40; i++) {
-            H[i].clear();
-        }
-        go(Hcnt, tmpAns, tmpMap, 2);
-        System.out.println("goOver");
-        for(int i = 0; i < 40; i++) {
-            H[i].clear();
-        }
-
-        flag = false;
-        for(int i = 0; i < LX; i++)
-            for(int j = 0; j < LY; j++){
-                tmpMap[i][j] = map[i][j];
-            }
-
-        if(PreS != 0)
-            go(0, tmpAns, tmpMap, 3);
-    }
-    static void go0(int now,int tmpMap[][]){
-        if(now == 2){
-            Solve();
-        }
-        int lx = box[now+1].lenx;
-        int ly = box[now+1].leny;
-        for(int i = 0; i < LX; i++){
-            for(int j = 0; j < LY; j++){
-                if(i + lx > LX || j + ly > LY) continue;
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
-                    }
-                go0(now + 1, tmpMap);
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
-                            tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f]) * (Mod-1)) % Mod;
-                    }
-            }
-
-        }
-
-    }
     static void go(int now,Pair tmp[],int tmpMap[][],int goID){
         long s = getStatus(tmpMap);
         if(goID == 1) {
@@ -249,16 +138,15 @@ public class modulo {
                 return;
             }
             long lstatus = getLeftStatus(tmpMap);
-            //System.out.println("lstatus: "+ lstatus + " " + HS[now].size());
-            /*
             if(!HS[now].contains(lstatus)) {
                 return;
             }
-            */
             if(!checkEdge(now, tmpMap)) {
-                //System.out.println("sdsd");
                 return;
             }
+            int cnt = needTime(tmpMap);
+            if(cnt > res[now+1]&& now <= 8) return;
+            if(cnt > res[now+1]) return;
 
         }else if(goID == 2){
             if(flag) return;
@@ -285,25 +173,26 @@ public class modulo {
                 }
                 return;
             }
-           // long lstatus = getLeftStatus(tmpMap);
-           // if(!HS[now].contains(lstatus)) return;
-
+            long lstatus = getLeftStatus(tmpMap);
+            if(!HS[now].contains(lstatus)) return;
             if(!checkEdge(now,tmpMap)) {
                 return;
             }
+            int cnt = needTime(tmpMap);
+            if(cnt > res[now+1] && now <= 8) return;
+            if(cnt > res[now+1]) return;
 
         }
         if(Has(now,s)) return ;
         H[now].add(s);
-      //  System.out.println("  sd " + now);
         int lx = box[now+1].lenx;
         int ly = box[now+1].leny;
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++){
-                if((goID == 1 || goID == 3) ) continue;
-               if(i + lx > LX || j + ly > LY) continue;
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
+              if(i + lx > LX || j + ly > LY) continue;
+                for(int g = 0; g < box[now+1].size; g++) {
+                        int k = box[now+1].x[g];
+                        int f = box[now+1].y[g];
                         if(goID == 1 || goID == 3)
                             tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
                         else{
@@ -313,8 +202,9 @@ public class modulo {
                 tmp[now].x = i;
                 tmp[now].y = j;
                 go(now + 1, tmp, tmpMap,goID);
-                for(int k = 0; k < lx; k++)
-                    for(int f = 0; f < ly; f++){
+                for(int g = 0; g < box[now+1].size; g++) {
+                        int k = box[now+1].x[g];
+                        int f = box[now+1].y[g];
                         if(goID == 2)
                             tmpMap[i+k][j+f] = (tmpMap[i+k][j+f] + (box[now+1].s[k][f])) % Mod;
                         else{
