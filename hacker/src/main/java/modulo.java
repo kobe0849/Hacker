@@ -28,6 +28,7 @@ public class modulo {
     static HashSet<Long> T = new HashSet<Long>();
     static int res[] = new int[40];
     static long PreS;
+    /*sd*/
     static boolean Has(int id,long s){
         return  H[id].contains(s);
     }
