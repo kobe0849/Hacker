@@ -31,6 +31,120 @@ public class modulo {
     static boolean Has(int id,long s){
         return  H[id].contains(s);
     }
+    static int getID(int x,int y){
+        return x * LY + y;
+    }
+    static int R[] = {
+            0,4,0,7,0,6,0,5,
+                1,7,1,6,1,5,
+                2,5,2,7,2,6,
+                    3,7,3,6,
+                        4,7
+    };
+    static int xx[];
+    static int yy[];
+    static int C;
+    static void gaoStatus(){
+        xx = new int[200];
+        yy = new int[200];
+        C = 13;
+        for(int i = 0; i < C; i++){
+            xx[i] = R[i * 2];
+            yy[i] = R[i * 2 + 1];
+        }
+        HashMap<Integer,Integer>mp = new HashMap<Integer, Integer>();
+        mp.clear();
+        for(int i = 0; i < C; i++){
+            int id = getID(xx[i],yy[i]);
+            mp.put(id,i);
+        }
+        HS[cnt] = new HashSet<Long>();
+        HS[cnt].add(0l);
+        for(int now = cnt; now >= 1; now --){
+            HS[now-1] = new HashSet<Long>();
+            Iterator<Long> iterator = HS[now].iterator();
+            while(iterator.hasNext()){
+                Long lastStatus = iterator.next();
+                HS[now-1].add(lastStatus);
+                if(now <= 4) continue;
+                int lenx = box[now].lenx;
+                int leny = box[now].leny;
+                Long tmp[] = new Long[20];
+                Long ts = lastStatus;
+                for(int i = 0; i < C; i++){
+                    tmp[C - i - 1] = ts % Mod;
+                    ts /= Mod;
+                }
+                Long t2[] = new Long[20];
+                for(int i = 0; i + lenx - 1 < LX; i++)
+                    for(int j = 0; j + leny - 1 < LY; j++){
+                        for(int k = 0; k < C; k++){
+                            t2[k] = tmp[k];
+                        }
+                        for(int k = 0; k < box[now].size; k++){
+                            int xx = box[now].x[k];
+                            int yy = box[now].y[k];
+                            int idx = i + xx;
+                            int idy = j + yy;
+                            int idd = getID(idx,idy);
+                            if(mp.containsKey(idd)){
+                                int f = mp.get(idd);
+                                t2[f] = (t2[f] - 1 + Mod) % Mod;
+                            }
+                        }
+                        long ss = 0l;
+                        for(int k = 0; k < C; k++){
+                            ss = ss * Mod + t2[k];
+                        }
+                        HS[now-1].add(ss);
+                    }
+
+            }
+            System.out.println(now + "  ff " + HS[now-1].size());
+        }
+    }
+    static void gaoTop(){
+        HS[cnt] = new HashSet<Long>();
+        HS[cnt].add(0l);
+        for(int now = cnt; now >= 1; now--) {
+            HS[now-1] = new HashSet<Long>();
+            Iterator<Long> iterator = HS[now].iterator();
+            while (iterator.hasNext()) {
+                Long st = iterator.next();
+                HS[now-1].add(st);
+                int lenx = box[now].lenx;
+                int leny = box[now].leny;
+                Long tmp[] = new Long[20];
+                Long ts = st;
+                for (int i = 0; i < LY; i++) {
+                    tmp[LY - i - 1] = ts % Mod;
+                    ts /= Mod;
+                }
+                Long t2[] = new Long[20];
+                for (int i = 0; i + leny - 1< LY; i++) {
+
+                    for (int j = 0; j < LY; j++) {
+                        t2[j] = tmp[j];
+                    }
+                    for (int j = 0; j < leny; j++) {
+                        int k = i + j;
+                        if (box[now].s[0][j] == 1) {
+                            t2[k] = (t2[k] - 1 + Mod) % Mod;
+                        }
+                    }
+                    Long ss = 0l;
+                    for (int j = 0; j < LY; j++) {
+                        ss = ss * Mod + t2[j];
+                    }
+                    HS[now-1].add(ss);
+                }
+
+            }
+            System.out.println(now + "  ff " + HS[now-1].size());
+
+        }
+
+    }
     static void gaoLeft(){
         HS[cnt] = new HashSet<Long>();
         HS[cnt].add(0l);
@@ -39,8 +153,6 @@ public class modulo {
             Iterator<Long> iterator = HS[now].iterator();
             while (iterator.hasNext()) {
                 Long st = iterator.next();
-                if(now >= cnt-1)
-                System.out.println(st);
                 HS[now-1].add(st);
                 int lenx = box[now].lenx;
                 int leny = box[now].leny;
@@ -87,13 +199,20 @@ public class modulo {
                 s = s * Mod + tmpMap[i][j];
             }
 
-       /* for (int k = 0; k < LX; k++) {
-            s = s * Mod + tmpMap[k][1];
+        return s;
+    }
+    static long getSta(int tmpMap[][]){
+        long ss = 0l;
+        for(int k = 0; k < C; k++){
+            ss = ss * Mod + tmpMap[xx[k]][yy[k]];
         }
-        for (int k = 0; k < LX; k++) {
-            s = s * Mod + tmpMap[k][0];
+        return ss;
+    }
+    static long getTopStatus(int tmpMap[][]){
+        long s = 0;
+        for(int i = 0; i < LY; i++){
+            s = s * Mod + tmpMap[0][i];
         }
-        */
         return s;
     }
     static long getLeftStatus(int tmpMap[][]){
@@ -137,15 +256,15 @@ public class modulo {
                 T.add(s);
                 return;
             }
-            long lstatus = getLeftStatus(tmpMap);
-            if(!HS[now].contains(lstatus)) {
+            long Status = getSta(tmpMap);
+            if(!HS[now].contains(Status)) {
                 return;
             }
             if(!checkEdge(now, tmpMap)) {
                 return;
             }
             int cnt = needTime(tmpMap);
-            if(cnt > res[now+1]&& now <= 8) return;
+            if(cnt  > res[now+1]  && now <= 8) return;
             if(cnt > res[now+1]) return;
 
         }else if(goID == 2){
@@ -190,6 +309,7 @@ public class modulo {
         for(int i = 0; i < LX; i++){
             for(int j = 0; j < LY; j++){
               if(i + lx > LX || j + ly > LY) continue;
+                if(now <= 2) System.out.println(i + " " + j + " " + now);
                 for(int g = 0; g < box[now+1].size; g++) {
                         int k = box[now+1].x[g];
                         int f = box[now+1].y[g];
@@ -255,7 +375,9 @@ public class modulo {
     }
     static void solve(){
         init();
-        gaoLeft();
+        //gaoLeft();
+        gaoStatus();
+       // gaoTop();
         T.clear();
         flag = false;
         Max = LX * LY;
@@ -274,6 +396,7 @@ public class modulo {
             H[i].clear();
         }
         go(0, tmpAns, tmpMap, 1);
+
         for(int i = 0; i < LX; i++)
             for(int j = 0; j < LY; j++){
                 tmpMap[i][j] = 0;
@@ -297,6 +420,7 @@ public class modulo {
 
         if(PreS != 0)
             go(0, tmpAns, tmpMap, 3);
+
     }
     public static void main(String args[]) {
         String str = Utils.sendPost("http://www.hacker.org/modulo/index.php?gotolevel=22&go=Go+To+Level", "");
